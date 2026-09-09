@@ -5,9 +5,22 @@ binding, REST routing, the blocking-work contract, and the shared
 infrastructure wiring (MyBatis/HikariCP/Flyway, Micrometer, OpenTelemetry).
 
 It is a **library, not an application** — no `main`, no ports of its own,
-no knowledge of any domain. That constraint is the point: `sun-moon-platform-bo`
-and `sun-moon-java-platform` both compose it, and neither can see the
-other through it.
+no knowledge of any domain.
+
+That constraint was written for two consumers — Back Office and the
+device-facing runtime — so that neither could reach the other through the
+kernel. **BO has since left**: it was rebuilt as a Spring service in the
+`sun-moon-java-platform` family (its `main` branch), because BO is
+administration with no throughput requirement and everything it
+hand-wrote is what `spring-boot-starter-security` provides. Its Netty
+implementation is archived as
+[sun-moon-platform-bo-netty](https://github.com/schware/sun-moon-platform-bo-netty).
+
+So this kernel has one consumer today —
+[sun-moon-java-platform](https://github.com/schware/sun-moon-java-platform)
+`master`. The two rules below are still worth keeping at one consumer,
+and whether a single-consumer kernel deserves its own repository is an
+open question rather than a settled one (that repo's `docs/adr/0015`).
 
 ## What's in it
 
@@ -26,8 +39,8 @@ application, because endpoints call repositories and JDBC blocks. A query
 run inline would stall every connection that thread serves.
 
 **The kernel imports nothing downward.** No domain types, no `main`, no
-service names — configuration like "which port is BO" belongs to the
-service, not here.
+service names — configuration like "which port a service listens on" belongs to it,
+not here.
 
 ## Use
 
