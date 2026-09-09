@@ -23,6 +23,9 @@ dependencies {
     api("io.netty:netty-handler:4.1.114.Final")
     api("io.netty:netty-transport:4.1.114.Final")
     api("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    // Instants and the rest of java.time are not serializable by a
+    // default ObjectMapper, and every service here has timestamps.
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
     api("org.mybatis:mybatis:3.5.16")
     // RequestValidation validates DTOs the caller declares, so the caller
     // needs the constraint annotations to declare them with.
